@@ -1,12 +1,23 @@
-import React from 'react'
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import { Dashboard } from './pages/Dashboard';
+import { Insights } from './pages/Insights';
+import { Library } from './pages/Library';
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-primary mb-4">SpeakUp Coaching</h1>
-      <p className="text-lg text-gray-300">Your AI-Powered Communication Coach</p>
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="insights" element={<Insights />} />
+          <Route path="library" element={<Library />} />
+          <Route path="profile" element={<div className="p-4 text-center mt-10">Profile Settings Placeholder</div>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
