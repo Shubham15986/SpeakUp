@@ -4,6 +4,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Dashboard } from './pages/Dashboard';
 import { Insights } from './pages/Insights';
 import { Library } from './pages/Library';
+import { DeepAnalysis } from './pages/DeepAnalysis';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 
@@ -19,6 +20,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="insights" element={<Insights />} />
             <Route path="library" element={<Library />} />
+            <Route path="analysis" element={<DeepAnalysis />} />
             <Route path="profile" element={<div className="p-4 text-center mt-10">Profile Settings Placeholder</div>} />
           </Route>
         </Route>

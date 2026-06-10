@@ -1,4 +1,4 @@
-
+import { Link } from 'react-router-dom';
 
 export const Dashboard = () => {
   return (
@@ -55,7 +55,7 @@ export const Dashboard = () => {
           </div>
         </button>
 
-        <button className="bg-surface-container-lowest dark:bg-surface border-[0.5px] border-outline-variant dark:border-outline rounded-xl p-4 flex flex-col gap-3 items-start text-left hover:bg-surface-container-low transition-colors active:opacity-80">
+        <Link to="/analysis" className="bg-surface-container-lowest dark:bg-surface border-[0.5px] border-outline-variant dark:border-outline rounded-xl p-4 flex flex-col gap-3 items-start text-left hover:bg-surface-container-low transition-colors active:opacity-80">
           <div className="w-10 h-10 rounded-lg bg-surface-container border-[0.5px] border-outline-variant flex items-center justify-center">
             <span className="material-symbols-outlined text-on-surface-variant">analytics</span>
           </div>
@@ -63,7 +63,7 @@ export const Dashboard = () => {
             <h3 className="font-label-md text-label-md text-on-surface font-bold">Deep Analysis</h3>
             <p className="font-body-md text-[12px] leading-tight text-on-surface-variant">Last active: 3 days ago</p>
           </div>
-        </button>
+        </Link>
 
         <button className="bg-surface-container-lowest dark:bg-surface border-[0.5px] border-outline-variant dark:border-outline rounded-xl p-4 flex flex-col gap-3 items-start text-left hover:bg-surface-container-low transition-colors active:opacity-80">
           <div className="w-10 h-10 rounded-lg bg-surface-container border-[0.5px] border-outline-variant flex items-center justify-center">
