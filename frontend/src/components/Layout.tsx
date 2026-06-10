@@ -1,7 +1,9 @@
-
 import { Outlet, NavLink } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 const TopAppBar = () => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <header className="fixed top-0 w-full z-50 flex justify-between items-center h-16 px-margin-mobile bg-background dark:bg-background border-b-[0.5px] border-outline-variant dark:border-outline md:px-margin-desktop">
       <div className="flex items-center gap-2">
@@ -9,8 +11,13 @@ const TopAppBar = () => {
         <span className="font-headline-md text-headline-md-mobile font-bold text-primary dark:text-primary-fixed-dim tracking-tight">SpeakUp</span>
       </div>
       <div className="flex items-center gap-4">
-        <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:opacity-80">
-          <span className="material-symbols-outlined text-on-surface-variant">dark_mode</span>
+        <button 
+          onClick={toggleTheme}
+          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:opacity-80"
+        >
+          <span className="material-symbols-outlined text-on-surface-variant dark:text-outline">
+            {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+          </span>
         </button>
         <div className="w-8 h-8 rounded-full overflow-hidden border-[0.5px] border-outline-variant bg-surface-container-high">
           <img alt="User profile photo" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClAQ7tzzeSur25DHLJTdn2S_UYq-8nuNWfclsEA0rkd0Y5VwCYLv6wIUaUR_83pBCmo3CpBRbC3QkLv-aF5ssixwc-bItECZejXkbOTYnVvd9dR8ohbChum29tX3NQ13LZthcYF-cazDNrD690h20PktrmCno3nmrsunfOWR-IMJig6XIPvQWHEJshEvZ2WbNii-ybeKHkKVadXUK5DTkQpYVduJLP7x4I66LYYLs63Yl2pxFqYWfXQw3mQ2PVrEoUZDwetOR6LJz1"/>

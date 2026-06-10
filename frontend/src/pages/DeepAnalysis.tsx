@@ -1,3 +1,5 @@
+import { apiFetch } from "../lib/api";
+
 import { useState } from 'react';
 import { RecordingStudio } from '../components/RecordingStudio';
 import { ReportUI } from '../components/ReportUI';
@@ -8,21 +10,26 @@ export const DeepAnalysis = () => {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-  const handleTranscriptionComplete = async (transcript: string) => {
+  const handleAnalysis = async (input: { transcript?: string, file?: File }) => {
     try {
       setError(null);
-      // In a real app, you would point this to your backend URL.
-      // For local development, assume backend runs on 5000.
-      const response = await fetch('http://localhost:5000/api/analysis/report', {
+      
+      const formData = new FormData();
+      formData.append('context', 'General Speech Practice');
+      formData.append('userId', user?.id || 'anonymous');
+      
+      if (input.file) {
+        formData.append('audio', input.file);
+      } else if (input.transcript) {
+        formData.append('transcript', input.transcript);
+      } else {
+        throw new Error("No input provided.");
+      }
+
+      // For local development, assume backend runs on 5001.
+      const response = await apiFetch('http://localhost:5001/api/analysis/report', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          transcript,
-          context: 'General Speech Practice',
-          userId: user?.id || 'anonymous'
-        }),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -42,8 +49,8 @@ export const DeepAnalysis = () => {
       {!report ? (
         <>
           <div className="flex flex-col gap-1">
-            <h1 className="font-headline-md text-headline-md text-on-surface">Deep Analysis</h1>
-            <p className="font-body-md text-body-md text-on-surface-variant">Record your speech and get instant, AI-driven feedback on clarity, grammar, and vocabulary.</p>
+            <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Deep Analysis</h1>
+            <p className="font-body-md text-body-md text-on-surface-variant font-bold">Freestyle speaking or upload an audio file for a complete grammatical and vocabulary breakdown.</p>
           </div>
           
           {error && (
@@ -53,7 +60,7 @@ export const DeepAnalysis = () => {
              </div>
           )}
 
-          <RecordingStudio onTranscriptionComplete={handleTranscriptionComplete} context="Freestyle Practice" />
+          <RecordingStudio onAnalyzeRequested={async (t) => handleAnalysis({ transcript: t })} context="Freestyle Practice" />
         </>
       ) : (
         <ReportUI report={report} onClose={() => setReport(null)} />

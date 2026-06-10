@@ -8,16 +8,16 @@ datasource db {
 }
 
 model User {
-  id            String       @id @default(uuid())
-  email         String       @unique
-  passwordHash  String?      // Optional since we'll use Supabase Auth later, but good for now if needed locally
-  role          String       @default("user")
-  goals         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  id            String   @id // Can be Google Auth ID or anonymous ID
+  email         String?
+  name          String?
+  goals         String?  // New field to store user goals
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   sessions      Session[]
   vocabulary    Vocabulary[]
+  libraryItems  LibraryItem[]
 }
 
 model Session {
@@ -36,16 +36,19 @@ model Session {
 }
 
 model AnalysisReport {
-  id              String   @id @default(uuid())
-  sessionId       String   @unique
-  transcript      String
-  clarityScore    Int
-  grammarErrors   Json
-  fillerWords     Json
-  vocabularyGaps  Json
-  aiSuggestions   Json
+  id                    String   @id @default(uuid())
+  sessionId             String   @unique
+  transcript            String
+  clarityScore          Int
+  technicalAccuracyScore Int     @default(0)
+  flowAndStructure      String   @default("")
+  modelAnswer           String   @default("")
+  grammarErrors         Json
+  fillerWords           Json
+  vocabularyGaps        Json
+  aiSuggestions         Json
   
-  session         Session  @relation(fields: [sessionId], references: [id])
+  session               Session  @relation(fields: [sessionId], references: [id])
 }
 
 model DsaQuestion {
@@ -92,4 +95,18 @@ model Vocabulary {
   
   user            User     @relation(fields: [userId], references: [id])
   session         Session? @relation(fields: [sourceSessionId], references: [id])
+}
+
+model LibraryItem {
+  id          String   @id @default(uuid())
+  userId      String
+  word        String
+  category    String   // "connector", "idiom", "transition", "power_word"
+  definition  String
+  example     String
+  isMarked    Boolean  @default(false)
+  isCustom    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
 }

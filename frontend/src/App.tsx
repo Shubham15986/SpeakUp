@@ -5,6 +5,10 @@ import { Dashboard } from './pages/Dashboard';
 import { Insights } from './pages/Insights';
 import { Library } from './pages/Library';
 import { DeepAnalysis } from './pages/DeepAnalysis';
+import { DSASimulator } from './pages/DSASimulator';
+import { CustomSimulator } from './pages/CustomSimulator';
+import { VocabBuilder } from './pages/VocabBuilder';
+import { Profile } from './pages/Profile';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 
@@ -21,7 +25,10 @@ function App() {
             <Route path="insights" element={<Insights />} />
             <Route path="library" element={<Library />} />
             <Route path="analysis" element={<DeepAnalysis />} />
-            <Route path="profile" element={<div className="p-4 text-center mt-10">Profile Settings Placeholder</div>} />
+            <Route path="dsa-simulator" element={<DSASimulator />} />
+            <Route path="custom-simulator" element={<CustomSimulator />} />
+            <Route path="vocab-builder" element={<VocabBuilder />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Route>
       </Routes>

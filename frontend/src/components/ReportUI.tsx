@@ -3,6 +3,9 @@ import { useState } from 'react';
 interface ReportProps {
   report: {
     clarityScore: number;
+    technicalAccuracyScore: number;
+    flowAndStructure: string;
+    modelAnswer: string;
     grammarErrors: { original: string; correction: string; explanation: string }[];
     fillerWords: { word: string; count: number; suggestion: string }[];
     vocabularyGaps: { weakWord: string; strongAlternatives: string[]; context: string }[];
@@ -70,18 +73,22 @@ export const ReportUI = ({ report, onClose }: ReportProps) => {
       </div>
 
       {/* Metric Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-primary-container text-on-primary-container rounded-xl p-4 flex flex-col items-center justify-center gap-1 shadow-sm">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-primary border-[0.5px] border-primary text-on-primary rounded-xl p-4 flex flex-col items-center justify-center gap-1">
           <span className="font-display text-4xl font-bold">{report.clarityScore}</span>
-          <span className="font-label-md text-[12px] opacity-80 uppercase tracking-wider">Clarity</span>
+          <span className="font-label-md text-[10px] opacity-80 uppercase tracking-wider text-center">Clarity Score</span>
+        </div>
+        <div className="bg-surface-container-lowest border-[0.5px] border-outline-variant rounded-xl p-4 flex flex-col items-center justify-center gap-1">
+          <span className="font-display text-4xl font-bold text-success">{report.technicalAccuracyScore}</span>
+          <span className="font-label-md text-[10px] text-on-surface-variant uppercase tracking-wider text-center">Tech Accuracy</span>
         </div>
         <div className="bg-surface-container-lowest border-[0.5px] border-outline-variant rounded-xl p-4 flex flex-col items-center justify-center gap-1">
           <span className="font-display text-4xl font-bold text-warning">{totalFillers}</span>
-          <span className="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Fillers</span>
+          <span className="font-label-md text-[10px] text-on-surface-variant uppercase tracking-wider text-center">Fillers</span>
         </div>
         <div className="bg-surface-container-lowest border-[0.5px] border-outline-variant rounded-xl p-4 flex flex-col items-center justify-center gap-1">
           <span className="font-display text-4xl font-bold text-error">{report.grammarErrors.length}</span>
-          <span className="font-label-md text-[12px] text-on-surface-variant uppercase tracking-wider">Grammar</span>
+          <span className="font-label-md text-[10px] text-on-surface-variant uppercase tracking-wider text-center">Grammar Errors</span>
         </div>
       </div>
 
@@ -94,7 +101,7 @@ export const ReportUI = ({ report, onClose }: ReportProps) => {
 
       {/* Active Mistake Drawer / Card */}
       {activeMistake && (
-        <div className="bg-surface-container-high border-[0.5px] border-outline-variant rounded-xl p-4 flex flex-col gap-2 shadow-md animate-in fade-in slide-in-from-bottom-4">
+        <div className="bg-surface-container-high border-[0.5px] border-outline-variant rounded-xl p-4 flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-4">
           <div className="flex justify-between items-start">
             <span className="font-label-md bg-primary-container/20 text-primary px-2 py-1 rounded text-[12px] font-bold uppercase tracking-wider">
               {activeMistake.type}
@@ -109,6 +116,27 @@ export const ReportUI = ({ report, onClose }: ReportProps) => {
           <p className="font-body-md text-on-surface-variant mt-2">{activeMistake.explanation}</p>
         </div>
       )}
+
+      {/* Content Evaluation */}
+      <section className="flex flex-col gap-4">
+        {report.flowAndStructure && (
+          <div className="bg-surface-container-lowest border-[0.5px] border-outline-variant rounded-xl p-4 flex flex-col gap-2">
+            <h3 className="font-headline-md text-primary font-semibold flex items-center gap-2">
+              <span className="material-symbols-outlined">account_tree</span> Flow & Structure
+            </h3>
+            <p className="font-body-md text-on-surface-variant leading-relaxed">{report.flowAndStructure}</p>
+          </div>
+        )}
+
+        {report.modelAnswer && (
+          <div className="bg-success-container/20 border-[0.5px] border-success-container rounded-xl p-4 flex flex-col gap-2">
+            <h3 className="font-headline-md text-success font-semibold flex items-center gap-2">
+              <span className="material-symbols-outlined">check_circle</span> Ideal Model Answer
+            </h3>
+            <p className="font-body-md text-on-surface leading-relaxed">{report.modelAnswer}</p>
+          </div>
+        )}
+      </section>
 
       {/* Expandable Sections (Simplified for MVP) */}
       <section className="flex flex-col gap-4">
