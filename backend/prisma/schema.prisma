@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(uuid())
+  email         String       @unique
+  passwordHash  String?      // Optional since we'll use Supabase Auth later, but good for now if needed locally
+  role          String       @default("user")
+  goals         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  sessions      Session[]
+  vocabulary    Vocabulary[]
+}
+
+model Session {
+  id            String            @id @default(uuid())
+  userId        String
+  type          String            // "DSA", "Custom", "DeepAnalysis"
+  score         Int?
+  startedAt     DateTime          @default(now())
+  endedAt       DateTime?
+
+  user          User              @relation(fields: [userId], references: [id])
+  report        AnalysisReport?
+  dsaSession    DsaSession?
+  customSession CustomSession?
+  vocabularies  Vocabulary[]
+}
+
+model AnalysisReport {
+  id              String   @id @default(uuid())
+  sessionId       String   @unique
+  transcript      String
+  clarityScore    Int
+  grammarErrors   Json
+  fillerWords     Json
+  vocabularyGaps  Json
+  aiSuggestions   Json
+  
+  session         Session  @relation(fields: [sessionId], references: [id])
+}
+
+model DsaQuestion {
+  id            String        @id @default(uuid())
+  title         String
+  description   String
+  topic         String
+  difficulty    String        // "Easy", "Medium", "Hard"
+  
+  dsaSessions   DsaSession[]
+}
+
+model DsaSession {
+  id            String      @id @default(uuid())
+  sessionId     String      @unique
+  questionId    String
+  transcript    String
+  aiEvaluation  Json
+  
+  session       Session     @relation(fields: [sessionId], references: [id])
+  question      DsaQuestion @relation(fields: [questionId], references: [id])
+}
+
+model CustomSession {
+  id            String   @id @default(uuid())
+  sessionId     String   @unique
+  topic         String
+  difficulty    String
+  transcript    String
+  aiEvaluation  Json
+  
+  session       Session  @relation(fields: [sessionId], references: [id])
+}
+
+model Vocabulary {
+  id              String   @id @default(uuid())
+  userId          String
+  sourceSessionId String?
+  word            String
+  category        String   // "connector", "idiom", "transition", "power_word"
+  definition      String
+  example         String
+  createdAt       DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id])
+  session         Session? @relation(fields: [sourceSessionId], references: [id])
+}
