@@ -4,6 +4,8 @@
   # 🗣️ SpeakUp
 
   **Your Personal AI-Powered Language Coach & Professional Vocabulary Builder**
+  
+  [**🚀 View Live Deployment**](https://main.d145f3p6u03wbp.amplifyapp.com)
 
   [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
   [![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
