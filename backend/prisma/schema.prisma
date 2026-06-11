@@ -110,3 +110,31 @@ model LibraryItem {
 
   user        User     @relation(fields: [userId], references: [id])
 }
+
+model LibraryWord {
+  id            String   @id @default(uuid())
+  word          String   @unique
+  type          String
+  definition    String
+  example       String?
+  phonetic      String?
+  audioUrl      String?
+  synonyms      String[]
+  frequencyRank Int?
+  source        String
+  createdAt     DateTime @default(now())
+}
+
+model WordOfDay {
+  id           String   @id @default(uuid())
+  word         String
+  phonetic     String?
+  audioUrl     String?
+  definition   String
+  example      String?
+  synonyms     String[]
+  type         String?
+  sourceWordId String?
+  date         DateTime
+  updatedAt    DateTime @updatedAt
+}

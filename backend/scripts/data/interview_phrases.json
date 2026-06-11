@@ -1,0 +1,22 @@
+[
+  { "word": "let me walk you through", "type": "interview_phrase", "definition": "To explain something clearly, step by step", "example": "Let me walk you through the approach before writing any code." },
+  { "word": "the trade-off here is", "type": "interview_phrase", "definition": "To explain a benefit vs cost decision", "example": "The trade-off here is time complexity versus space complexity." },
+  { "word": "one edge case to consider", "type": "interview_phrase", "definition": "To flag a boundary condition in a solution", "example": "One edge case to consider is when the input array is empty." },
+  { "word": "my initial thought was", "type": "interview_phrase", "definition": "To explain your first instinct or approach", "example": "My initial thought was to use brute force with O(n²) complexity." },
+  { "word": "a more optimal approach would be", "type": "interview_phrase", "definition": "To introduce a better solution than what was just discussed", "example": "A more optimal approach would be to use a hashmap here." },
+  { "word": "to build on that", "type": "interview_phrase", "definition": "To extend or expand a previous point", "example": "To build on that, we can also cache results to avoid recomputation." },
+  { "word": "if I understand the problem correctly", "type": "interview_phrase", "definition": "To confirm your understanding before solving", "example": "If I understand the problem correctly, we need the shortest path." },
+  { "word": "the reason I chose this approach is", "type": "interview_phrase", "definition": "To justify a technical decision clearly", "example": "The reason I chose this approach is that it avoids extra space." },
+  { "word": "to verify my solution", "type": "interview_phrase", "definition": "To test or validate the approach against examples", "example": "To verify my solution, let me trace through a sample input." },
+  { "word": "does that make sense", "type": "interview_phrase", "definition": "To check that the listener has understood your explanation", "example": "We use two pointers to avoid nested loops. Does that make sense?" },
+  { "word": "breaking this down into smaller steps", "type": "interview_phrase", "definition": "To simplify a complex problem", "example": "Breaking this down into smaller steps, we first sort the array." },
+  { "word": "to optimize for time", "type": "interview_phrase", "definition": "To focus on improving execution speed", "example": "To optimize for time, we will sacrifice some memory by using a set." },
+  { "word": "before we write any code", "type": "interview_phrase", "definition": "Used to establish a plan first", "example": "Before we write any code, let's agree on the data structures." },
+  { "word": "the bottleneck of this approach", "type": "interview_phrase", "definition": "Identifying the slowest part of a system", "example": "The bottleneck of this approach is the nested loop searching." },
+  { "word": "taking a step back", "type": "interview_phrase", "definition": "To look at the broader picture or reconsider", "example": "Taking a step back, maybe a graph traversal isn't needed here." },
+  { "word": "let's dry run this", "type": "interview_phrase", "definition": "To mentally trace through the code", "example": "Let's dry run this logic with an input of [1, 2, 3]." },
+  { "word": "another way to look at this", "type": "interview_phrase", "definition": "Introducing an alternative perspective", "example": "Another way to look at this is as a dynamic programming problem." },
+  { "word": "in the worst case scenario", "type": "interview_phrase", "definition": "Describing the maximum possible complexity", "example": "In the worst case scenario, we traverse every node in the tree." },
+  { "word": "a naive implementation", "type": "interview_phrase", "definition": "A simple, but usually inefficient, first attempt", "example": "A naive implementation would check every possible substring." },
+  { "word": "to put it simply", "type": "interview_phrase", "definition": "To explain something in easy terms", "example": "To put it simply, it behaves like a First-In-First-Out queue." }
+]

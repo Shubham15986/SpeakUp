@@ -18,11 +18,37 @@ export const Library = () => {
     if (!user?.id) return;
     try {
       setIsLoading(true);
-      const res = await apiFetch(`http://localhost:5001/api/library?userId=${user.id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setItems(data);
+      // Fetch user's personal marked/custom words
+      const userRes = await apiFetch(`http://localhost:5001/api/library?userId=${user.id}`);
+      let userWords = [];
+      if (userRes.ok) userWords = await userRes.json();
+
+      // Fetch the massive global Vocab Library we just seeded!
+      const vocabRes = await apiFetch(`http://localhost:5001/api/vocab/library?limit=1000`);
+      let globalWords = [];
+      if (vocabRes.ok) {
+        const vocabData = await vocabRes.json();
+        // Map the new schema to match the frontend UI schema
+        globalWords = vocabData.words.map((w: any) => {
+          let cat = 'General';
+          if (w.type === 'connector') cat = 'Connectors';
+          if (w.type === 'idiom') cat = 'Idioms';
+          if (w.type === 'power_word') cat = 'Power Words';
+          if (w.type === 'interview_phrase') cat = 'Transition Phrases';
+          
+          return {
+            id: w.id,
+            word: w.word,
+            category: cat,
+            definition: w.definition,
+            example: w.example,
+            isMarked: false,
+            isCustom: false
+          };
+        });
       }
+
+      setItems([...userWords, ...globalWords]);
     } catch (err) {
       console.error(err);
     } finally {
@@ -67,9 +93,30 @@ export const Library = () => {
     }
   };
 
+  const fetchMeaning = async (word: string) => {
+    try {
+      // Trigger backend on-demand enrichment
+      const res = await apiFetch(`http://localhost:5001/api/vocab/search?q=${word}`);
+      if (res.ok) {
+        const data = await res.json();
+        const dict = data.result;
+        if (dict) {
+          // Update the exact item in the UI instantly without reloading!
+          setItems(prev => prev.map(item => 
+            item.word === word 
+              ? { ...item, definition: dict.definition, example: dict.example } 
+              : item
+          ));
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const filteredItems = items.filter(item => {
     const matchesFilter = filter === 'All' || item.category === filter || (filter === 'Marked' && item.isMarked);
-    const matchesSearch = item.word.toLowerCase().includes(search.toLowerCase()) || item.definition.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = item.word.toLowerCase().includes(search.toLowerCase()) || (item.definition && item.definition.toLowerCase().includes(search.toLowerCase()));
     return matchesFilter && matchesSearch;
   });
 
@@ -137,10 +184,23 @@ export const Library = () => {
                     {item.category} {item.isCustom && '• Custom'}
                   </span>
                 </div>
-                <p className="font-body-md text-body-md text-on-surface-variant">{item.definition}</p>
-                <div className="bg-surface-container-low rounded-lg border-[0.5px] border-outline-variant p-sm mt-auto">
-                  <p className="font-body-sm text-body-sm text-on-background italic">"{item.example}"</p>
-                </div>
+                {!item.definition ? (
+                  <button 
+                    onClick={() => fetchMeaning(item.word)}
+                    className="font-label-md text-primary bg-primary/10 rounded-lg py-2 px-4 mt-2 w-fit active:scale-95 transition-transform"
+                  >
+                    <span className="material-symbols-outlined text-[16px] align-middle mr-1">download</span>
+                    Fetch Meaning
+                  </button>
+                ) : (
+                  <p className="font-body-md text-body-md text-on-surface-variant">{item.definition}</p>
+                )}
+                
+                {item.example && (
+                  <div className="bg-surface-container-low rounded-lg border-[0.5px] border-outline-variant p-sm mt-auto">
+                    <p className="font-body-sm text-body-sm text-on-background italic">"{item.example}"</p>
+                  </div>
+                )}
               </article>
             ))}
           </div>

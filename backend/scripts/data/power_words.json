@@ -1,0 +1,22 @@
+[
+  { "word": "articulate", "type": "power_word", "definition": "To express something clearly and effectively", "example": "She was able to articulate the algorithm's logic in simple terms." },
+  { "word": "concise", "type": "power_word", "definition": "Giving a lot of information clearly in few words", "example": "A concise explanation is more valuable than a long one in interviews." },
+  { "word": "demonstrate", "type": "power_word", "definition": "Clearly show the existence or truth of something by evidence", "example": "Let me demonstrate this with a concrete example." },
+  { "word": "elaborate", "type": "power_word", "definition": "To develop or present a theory in further detail", "example": "Could you elaborate on why you chose this data structure?" },
+  { "word": "leverage", "type": "power_word", "definition": "To use something to maximum advantage", "example": "We leverage the sorted property of the array to run binary search." },
+  { "word": "systematically", "type": "power_word", "definition": "Done according to a fixed plan or system", "example": "I systematically ruled out approaches that required O(n²) time." },
+  { "word": "fundamental", "type": "power_word", "definition": "Forming a necessary base or core; of central importance", "example": "Recursion is a fundamental concept in computer science." },
+  { "word": "precisely", "type": "power_word", "definition": "In exact terms; without vagueness", "example": "This is precisely why we need a base case in every recursive function." },
+  { "word": "consequently", "type": "power_word", "definition": "As a result; therefore", "example": "The loop runs n times; consequently the time complexity is O(n)." },
+  { "word": "robust", "type": "power_word", "definition": "Strong and effective in all conditions", "example": "A robust solution must handle null inputs and empty arrays." },
+  { "word": "mitigate", "type": "power_word", "definition": "Make less severe, serious, or painful", "example": "We use a CDN to mitigate latency issues for global users." },
+  { "word": "facilitate", "type": "power_word", "definition": "Make an action or process easy or easier", "example": "Docker helps facilitate the deployment process across environments." },
+  { "word": "streamline", "type": "power_word", "definition": "Make an organization or system more efficient and effective", "example": "We streamlined the CI/CD pipeline to reduce build times." },
+  { "word": "scalability", "type": "power_word", "definition": "The capacity to be changed in size or scale", "example": "Microservices offer better scalability than monolithic architectures." },
+  { "word": "optimize", "type": "power_word", "definition": "Make the best or most effective use of a resource", "example": "We need to optimize the database queries to reduce load times." },
+  { "word": "validate", "type": "power_word", "definition": "Check or prove the validity or accuracy of something", "example": "Always validate user input on the server side." },
+  { "word": "integrate", "type": "power_word", "definition": "Combine one thing with another so that they become a whole", "example": "We plan to integrate Stripe for payment processing." },
+  { "word": "encapsulate", "type": "power_word", "definition": "Enclose something in or as if in a capsule", "example": "We encapsulate the logic inside a single class to hide complexity." },
+  { "word": "modular", "type": "power_word", "definition": "Employing or involving independent units that can be combined", "example": "A modular design allows teams to work independently." },
+  { "word": "resilient", "type": "power_word", "definition": "Able to withstand or recover quickly from difficult conditions", "example": "A resilient system gracefully handles third-party API failures." }
+]

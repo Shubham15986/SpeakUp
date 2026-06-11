@@ -11,6 +11,7 @@ import libraryRoutes from './routes/library';
 import profileRoutes from './routes/profile';
 
 import { requireAuth } from './middleware/auth';
+import './cron/wordOfDay';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
