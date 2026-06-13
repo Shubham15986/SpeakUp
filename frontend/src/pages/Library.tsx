@@ -9,10 +9,27 @@ export const Library = () => {
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(30);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newWord, setNewWord] = useState({ word: '', category: 'Power Words', definition: '', example: '' });
+
+  // Reset visible count when searching or filtering
+  useEffect(() => {
+    setVisibleCount(30);
+  }, [search, filter]);
+
+  // Infinite Scroll Listener
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 500) {
+        setVisibleCount(prev => prev + 30);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const fetchLibrary = async () => {
     if (!user?.id) return;
@@ -24,7 +41,7 @@ export const Library = () => {
       if (userRes.ok) userWords = await userRes.json();
 
       // Fetch the massive global Vocab Library we just seeded!
-      const vocabRes = await apiFetch(`http://localhost:5001/api/vocab/library?limit=1000`);
+      const vocabRes = await apiFetch(`http://localhost:5001/api/vocab/library?limit=5000`);
       let globalWords = [];
       if (vocabRes.ok) {
         const vocabData = await vocabRes.json();
@@ -168,7 +185,7 @@ export const Library = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
-            {filteredItems.map(item => (
+            {filteredItems.slice(0, visibleCount).map(item => (
               <article key={item.id} className="bg-surface rounded-xl border-[0.5px] border-outline-variant p-md flex flex-col gap-sm relative">
                 <button 
                   onClick={() => toggleMark(item.id, item.isMarked)}
