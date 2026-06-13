@@ -125,7 +125,8 @@ router.get('/gaps', requireAuth, async (req, res) => {
     let idCounter = 1;
     for (const report of reports) {
       if (Array.isArray(report.vocabularyGaps)) {
-        for (const gap of report.vocabularyGaps) {
+        for (const gapItem of report.vocabularyGaps) {
+          const gap = gapItem as any;
           if (gap && gap.weakWord && !gapsMap.has(gap.weakWord.toLowerCase())) {
             gapsMap.set(gap.weakWord.toLowerCase(), {
               id: idCounter++, 
