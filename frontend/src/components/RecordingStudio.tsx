@@ -22,6 +22,7 @@ export const RecordingStudio = ({ onAnalyzeRequested, context = "Deep Analysis" 
   const [isTranscribing, setIsTranscribing] = useState(false);
   
   const recognitionRef = useRef<any>(null);
+  const isRecordingRef = useRef(false);
 
   const finalTranscriptRef = useRef('');
 
@@ -45,8 +46,23 @@ export const RecordingStudio = ({ onAnalyzeRequested, context = "Deep Analysis" 
       };
 
       recognitionRef.current.onerror = (event: any) => {
-        console.error("Speech recognition error", event.error);
-        setIsRecording(false);
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          console.error("Speech recognition error", event.error);
+          isRecordingRef.current = false;
+          setIsRecording(false);
+        }
+      };
+
+      recognitionRef.current.onend = () => {
+        if (isRecordingRef.current) {
+          try {
+            recognitionRef.current.start();
+          } catch (e) {
+            console.error("Failed to restart recognition:", e);
+            isRecordingRef.current = false;
+            setIsRecording(false);
+          }
+        }
       };
     } else {
       console.warn("Speech Recognition API not supported in this browser.");
@@ -55,13 +71,15 @@ export const RecordingStudio = ({ onAnalyzeRequested, context = "Deep Analysis" 
 
   const toggleRecording = () => {
     if (isRecording) {
-      recognitionRef.current?.stop();
+      isRecordingRef.current = false;
       setIsRecording(false);
+      recognitionRef.current?.stop();
     } else {
       finalTranscriptRef.current = '';
       setTranscript('');
-      recognitionRef.current?.start();
+      isRecordingRef.current = true;
       setIsRecording(true);
+      recognitionRef.current?.start();
     }
   };
 
