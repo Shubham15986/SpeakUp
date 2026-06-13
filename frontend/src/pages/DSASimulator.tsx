@@ -78,8 +78,8 @@ export const DSASimulator = () => {
       </div>
 
       {!question ? (
-        <div className="bg-surface-container rounded-xl p-6 border-[0.5px] border-outline-variant flex flex-col gap-4 max-w-2xl w-full">
-          <label className="font-label-lg text-on-surface">LeetCode URL or Problem Number</label>
+        <div className="bg-surface-container rounded-xl p-6 border-[0.5px] border-outline-variant flex flex-col gap-4 max-w-4xl w-full min-w-[300px]">
+          <label className="font-label-lg text-on-surface block">LeetCode URL or Problem Number</label>
           <div className="flex flex-col sm:flex-row gap-4 w-full">
             <input 
               type="text" 

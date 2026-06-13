@@ -102,7 +102,7 @@ export const RecordingStudio = ({ onAnalyzeRequested, context = "Deep Analysis" 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-md bg-surface-container-lowest border-[0.5px] border-outline-variant rounded-xl gap-lg w-full">
+    <div className="flex flex-col items-center justify-center p-md bg-surface-container-lowest border-[0.5px] border-outline-variant rounded-xl gap-lg w-full min-w-[300px]">
       <div className="flex flex-col items-center gap-2 w-full px-4">
         <h3 className="font-headline-md text-headline-md font-bold text-center w-full">{context}</h3>
         <p className="font-body-md text-on-surface-variant text-center max-w-md w-full">
