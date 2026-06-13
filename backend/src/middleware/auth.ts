@@ -42,6 +42,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
       if (req.method === 'GET' || req.method === 'DELETE') {
         req.query.userId = decoded.sub;
       } else {
+        if (!req.body) req.body = {};
         req.body.userId = decoded.sub;
       }
     }
