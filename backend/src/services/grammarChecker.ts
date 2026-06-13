@@ -36,6 +36,11 @@ export const checkGrammar = async (transcript: string): Promise<GrammarError[]> 
         ? match.replacements[0].value 
         : '';
         
+      // Ignore errors that are purely capitalization differences, since transcripts often lack perfect casing
+      if (correction && original.toLowerCase() === correction.toLowerCase()) {
+        continue;
+      }
+        
       errors.push({
         original,
         correction,
