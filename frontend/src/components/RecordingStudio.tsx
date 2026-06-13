@@ -23,6 +23,8 @@ export const RecordingStudio = ({ onAnalyzeRequested, context = "Deep Analysis" 
   
   const recognitionRef = useRef<any>(null);
 
+  const finalTranscriptRef = useRef('');
+
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -31,11 +33,15 @@ export const RecordingStudio = ({ onAnalyzeRequested, context = "Deep Analysis" 
       recognitionRef.current.interimResults = true;
       
       recognitionRef.current.onresult = (event: any) => {
-        let currentTranscript = '';
-        for (let i = 0; i < event.results.length; i++) {
-          currentTranscript += event.results[i][0].transcript;
+        let interimTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscriptRef.current += event.results[i][0].transcript + ' ';
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
         }
-        setTranscript(currentTranscript);
+        setTranscript((finalTranscriptRef.current + interimTranscript).trim());
       };
 
       recognitionRef.current.onerror = (event: any) => {
@@ -51,8 +57,8 @@ export const RecordingStudio = ({ onAnalyzeRequested, context = "Deep Analysis" 
     if (isRecording) {
       recognitionRef.current?.stop();
       setIsRecording(false);
-      // Removed the automatic analysis here! Now it just stops and leaves the transcript visible.
     } else {
+      finalTranscriptRef.current = '';
       setTranscript('');
       recognitionRef.current?.start();
       setIsRecording(true);
@@ -62,6 +68,7 @@ export const RecordingStudio = ({ onAnalyzeRequested, context = "Deep Analysis" 
   const handleAudioUpload = async (file: File) => {
     try {
       setIsTranscribing(true);
+      finalTranscriptRef.current = '';
       setTranscript(''); // Clear previous
       
       const formData = new FormData();
@@ -123,7 +130,10 @@ export const RecordingStudio = ({ onAnalyzeRequested, context = "Deep Analysis" 
           // Analyze Button View
           <div className="flex gap-4">
             <button 
-              onClick={() => setTranscript('')}
+              onClick={() => {
+                finalTranscriptRef.current = '';
+                setTranscript('');
+              }}
               disabled={isAnalyzing}
               className="bg-surface-container-high text-on-surface px-6 py-3 rounded-lg font-label-lg border-[0.5px] border-outline-variant hover:bg-surface-container transition-colors disabled:opacity-50"
             >
