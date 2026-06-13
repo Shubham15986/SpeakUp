@@ -2,9 +2,34 @@ import { Request, Response } from 'express';
 
 const LEETCODE_GRAPHQL = 'https://leetcode.com/graphql';
 
-const extractTitleSlug = (url: string) => {
-  const match = url.match(/leetcode\.com\/problems\/([^/]+)/);
-  return match ? match[1] : null;
+const extractTitleSlug = async (input: string): Promise<string | null> => {
+  // If it's a full URL
+  const match = input.match(/leetcode\.com\/problems\/([^/]+)/);
+  if (match) return match[1];
+
+  // If it's a serial number
+  if (!isNaN(Number(input))) {
+    const id = Number(input);
+    try {
+      const res = await fetch('https://leetcode.com/api/problems/all/');
+      if (res.ok) {
+        const data = await res.json();
+        const problem = data.stat_status_pairs.find((p: any) => p.stat.frontend_question_id === id);
+        if (problem) {
+          return problem.stat.question__title_slug;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to fetch from leetcode all problems API', e);
+    }
+  }
+
+  // If it's already a slug
+  if (/^[a-z0-9-]+$/.test(input)) {
+    return input;
+  }
+
+  return null;
 };
 
 export const extractQuestion = async (req: Request, res: Response): Promise<any> => {
@@ -12,14 +37,13 @@ export const extractQuestion = async (req: Request, res: Response): Promise<any>
     const { url } = req.body;
     
     if (!url) {
-      return res.status(400).json({ error: 'URL is required' });
+      return res.status(400).json({ error: 'Input is required' });
     }
 
-    if (url.includes('leetcode.com')) {
-      const titleSlug = extractTitleSlug(url);
-      if (!titleSlug) {
-         return res.status(400).json({ error: 'Invalid LeetCode URL' });
-      }
+    const titleSlug = await extractTitleSlug(url);
+    if (!titleSlug) {
+       return res.status(400).json({ error: 'Invalid LeetCode URL or Problem Number' });
+    }
 
       const query = `
         query questionData($titleSlug: String!) {
@@ -67,11 +91,6 @@ export const extractQuestion = async (req: Request, res: Response): Promise<any>
         topics: question.topicTags?.map((t: any) => t.name) || [],
         source: 'LeetCode'
       });
-
-    } else {
-      // Basic fallback for other URLs or HackerRank (not fully implemented)
-      return res.status(400).json({ error: 'Only LeetCode URLs are currently supported.' });
-    }
 
   } catch (error: any) {
     console.error('Scraping error:', error);

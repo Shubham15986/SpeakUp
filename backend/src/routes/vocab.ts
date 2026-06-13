@@ -111,4 +111,38 @@ router.post('/save', requireAuth, async (req, res) => {
   res.json({ saved: true, entry: saved });
 });
 
+// GET /api/vocab/gaps
+router.get('/gaps', requireAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    const reports = await prisma.analysisReport.findMany({
+      where: { session: { userId: userId } },
+      select: { vocabularyGaps: true }
+    });
+
+    const gapsMap = new Map<string, any>();
+    let idCounter = 1;
+    for (const report of reports) {
+      if (Array.isArray(report.vocabularyGaps)) {
+        for (const gap of report.vocabularyGaps) {
+          if (gap && gap.weakWord && !gapsMap.has(gap.weakWord.toLowerCase())) {
+            gapsMap.set(gap.weakWord.toLowerCase(), {
+              id: idCounter++, 
+              weakWord: gap.weakWord,
+              strongAlternatives: gap.strongAlternatives || [],
+              context: gap.context || ''
+            });
+          }
+        }
+      }
+    }
+
+    res.json(Array.from(gapsMap.values()));
+  } catch (error) {
+    console.error('Failed to fetch vocab gaps:', error);
+    res.status(500).json({ error: 'Failed to fetch vocab gaps' });
+  }
+});
+
 export default router;

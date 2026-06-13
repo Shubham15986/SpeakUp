@@ -62,12 +62,12 @@ export const CustomSimulator = () => {
       </div>
 
       {!activeTopic ? (
-        <div className="bg-surface-container rounded-xl p-6 border-[0.5px] border-outline-variant flex flex-col gap-4 max-w-2xl">
+        <div className="bg-surface-container rounded-xl p-6 border-[0.5px] border-outline-variant flex flex-col gap-4 max-w-2xl w-full">
           <label className="font-label-lg text-on-surface">Interview Topic</label>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-4 w-full">
             <input 
               type="text" 
-              className="flex-1 bg-surface border-[0.5px] border-outline-variant rounded-lg px-4 py-2 text-on-surface font-body-md focus:outline-none focus:border-primary"
+              className="flex-1 bg-surface border-[0.5px] border-outline-variant rounded-lg px-4 py-2 text-on-surface font-body-md focus:outline-none focus:border-primary w-full"
               placeholder="e.g., React Hooks, System Design for Twitter, OOPS concepts..."
               value={topic}
               onChange={(e) => setTopic(e.target.value)}

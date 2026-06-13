@@ -78,13 +78,13 @@ export const DSASimulator = () => {
       </div>
 
       {!question ? (
-        <div className="bg-surface-container rounded-xl p-6 border-[0.5px] border-outline-variant flex flex-col gap-4 max-w-2xl">
-          <label className="font-label-lg text-on-surface">LeetCode URL</label>
-          <div className="flex gap-2">
+        <div className="bg-surface-container rounded-xl p-6 border-[0.5px] border-outline-variant flex flex-col gap-4 max-w-2xl w-full">
+          <label className="font-label-lg text-on-surface">LeetCode URL or Problem Number</label>
+          <div className="flex flex-col sm:flex-row gap-4 w-full">
             <input 
               type="text" 
-              className="flex-1 bg-surface border-[0.5px] border-outline-variant rounded-lg px-4 py-2 text-on-surface font-body-md focus:outline-none focus:border-primary"
-              placeholder="https://leetcode.com/problems/two-sum/"
+              className="flex-1 bg-surface border-[0.5px] border-outline-variant rounded-lg px-4 py-2 text-on-surface font-body-md focus:outline-none focus:border-primary w-full"
+              placeholder="e.g. 1 or https://leetcode.com/problems/two-sum/"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
