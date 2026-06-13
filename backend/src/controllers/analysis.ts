@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import { GoogleGenAI } from '@google/genai';
 import { PrismaClient } from '@prisma/client';
+import { runAnalysis } from '../services/analysisEngine';
 
 const prisma = new PrismaClient();
 
 export const generateReport = async (req: Request, res: Response): Promise<any> => {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const { context, userId } = req.body;
+    const { context, userId, durationSeconds } = req.body;
     const file = req.file;
     let transcript = req.body.transcript || '';
 
@@ -16,59 +16,31 @@ export const generateReport = async (req: Request, res: Response): Promise<any> 
       return;
     }
 
-    const prompt = `
-System: You are an expert technical interviewer and communication coach for software engineers.
-Context: ${context || 'General communication'}
-${transcript ? `Input Transcript: "${transcript}"` : `Task: First, listen to the attached audio file and transcribe it accurately. Then, analyze it.`}
-
-Analyze the input (audio or text) based on BOTH communication delivery and technical content. Output a JSON object exactly matching this schema:
-{
-  "transcript": "The full exact transcript of what was spoken (critical if an audio file was provided, otherwise just repeat the input)",
-  "clarityScore": 85,
-  "technicalAccuracyScore": 90,
-  "flowAndStructure": "A brief paragraph evaluating the logical flow and structure of the answer (e.g., use of STAR method, problem-solving flow).",
-  "modelAnswer": "A full, perfect 'ideal response' to the context/question that the user can learn from.",
-  "grammarErrors": [{"original": "...", "correction": "...", "explanation": "..."}],
-  "fillerWords": [{"word": "basically", "count": 3, "suggestion": "essentially"}],
-  "vocabularyGaps": [{"weakWord": "good", "strongAlternatives": ["robust", "optimal", "effective"], "context": "..."}],
-  "strengths": ["...", "..."],
-  "aiSuggestions": [{"title": "...", "exercise": "..."}]
-}
-Output nothing but the valid JSON.
-`;
-
-    let contents: any = prompt;
-
-    if (file) {
-      contents = [
-        {
-          inlineData: {
-            mimeType: file.mimetype,
-            data: file.buffer.toString('base64')
-          }
-        },
-        prompt
-      ];
+    // If we only got an audio file without a transcript, transcribe it first
+    if (!transcript && file) {
+       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+       const contents = [
+         {
+           inlineData: {
+             mimeType: file.mimetype,
+             data: file.buffer.toString('base64')
+           }
+         },
+         "Please transcribe this audio file accurately. Output ONLY the raw text transcript."
+       ];
+       const response = await ai.models.generateContent({
+         model: 'gemini-2.5-flash',
+         contents: contents,
+       });
+       transcript = response.text?.trim() || "";
     }
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: contents,
-      config: {
-        responseMimeType: "application/json",
-      }
+    // Run the new hybrid analysis engine
+    const reportData = await runAnalysis({
+      transcript,
+      context: context || 'General communication',
+      durationSeconds: durationSeconds ? parseInt(durationSeconds) : 60
     });
-
-    const resultText = response.text || "{}";
-    let reportData;
-    try {
-      // Sometimes Gemini wraps JSON in markdown blocks
-      const cleanJson = resultText.replace(/```json\n?|```/g, '').trim();
-      reportData = JSON.parse(cleanJson);
-    } catch (parseError) {
-      console.error("Failed to parse Gemini JSON:", resultText);
-      return res.status(500).json({ error: "Invalid JSON response from AI" });
-    }
 
     // Ensure user exists before creating session to satisfy foreign key constraint
     const dbUser = await prisma.user.upsert({
@@ -87,7 +59,7 @@ Output nothing but the valid JSON.
         score: reportData.clarityScore,
         report: {
           create: {
-            transcript: transcript || 'Audio File Transcription',
+            transcript: transcript,
             clarityScore: reportData.clarityScore,
             technicalAccuracyScore: reportData.technicalAccuracyScore || 0,
             flowAndStructure: reportData.flowAndStructure || '',
